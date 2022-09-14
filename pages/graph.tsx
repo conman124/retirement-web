@@ -1,6 +1,6 @@
-import {useRef, useEffect, Suspense} from 'react';
+import { useRef, useEffect, Suspense } from "react";
 import dynamic from "next/dynamic";
-import {graph} from "../graph"
+import { graph } from "../graph";
 
 const GraphDynamic = dynamic({
   loader: async () => {
@@ -13,10 +13,10 @@ const GraphDynamic = dynamic({
         graph(RetirementModule, svg.current, 50);
       });
 
-      return <svg ref={svg} />
-    }
+      return <svg ref={svg} />;
+    };
   },
-  ssr: false
+  ssr: false,
 });
 
 export default function Home() {
@@ -24,5 +24,5 @@ export default function Home() {
     <Suspense fallback="Loading...">
       <GraphDynamic />
     </Suspense>
-  )
+  );
 }

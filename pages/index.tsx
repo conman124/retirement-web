@@ -1,28 +1,9 @@
-import {useRef, useEffect, Suspense} from 'react';
-import dynamic from "next/dynamic";
-import {graph} from "../graph"
-
-const GraphDynamic = dynamic({
-  loader: async () => {
-    const RetirementModule = await import("@conman124/retirement");
-
-    return function Graph() {
-      const svg = useRef(null);
-
-      useEffect(() => {
-        graph(RetirementModule, svg.current, 50);
-      });
-
-      return <svg ref={svg} />
-    }
-  },
-  ssr: false
-});
+import {Alert} from "react-bootstrap";
 
 export default function Home() {
-  return (
-    <Suspense fallback="Loading...">
-      <GraphDynamic />
-    </Suspense>
-  )
+    return (
+        <Alert variant="primary">
+            This is a primary alert—check it out!
+        </Alert>
+    )
 }

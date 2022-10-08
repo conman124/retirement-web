@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { AppProps } from "next/app";
 import { Provider } from "react-redux";
-import "../styles/globals.scss";
+import "../styles/globals.css";
 import store from "../store";
 
 function MyApp({ Component, pageProps }: AppProps) {

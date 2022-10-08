@@ -1,5 +1,3 @@
-import { Alert } from "react-bootstrap";
-
 export default function Home() {
-  return <Alert variant="primary">This is the calculator page!</Alert>;
+  return <div>This is the calculator page!</div>;
 }

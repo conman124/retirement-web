@@ -19,7 +19,7 @@ const GraphDynamic = dynamic({
   ssr: false,
 });
 
-export default function Home() {
+export default function Graph() {
   return (
     <Suspense fallback="Loading...">
       <GraphDynamic />

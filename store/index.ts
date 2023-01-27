@@ -1,21 +1,14 @@
-import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
+import { simulationSlice } from "./simulator";
 
-export function makeStore() {
-  return configureStore({
-    reducer: {
-      //[slice.name]: slice.reducer,
-    },
-    devTools: true,
-  });
-}
+const store = configureStore({
+  reducer: {
+    [simulationSlice.name]: simulationSlice.reducer,
+  },
+  devTools: process.env.NODE_ENV !== "production",
+});
 
-export type AppStore = ReturnType<typeof makeStore>;
-export type AppState = ReturnType<AppStore["getState"]>;
-export type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  AppState,
-  unknown,
-  Action
->;
+export default store;
 
-export default makeStore();
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

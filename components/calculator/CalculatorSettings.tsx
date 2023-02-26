@@ -9,7 +9,10 @@ import {
   setSeed,
   setCount,
 } from "../../store/simulator";
-import { Subpage } from "../../pages/calculator";
+import {
+  CalculatorSettingsSubpageProps,
+  Subpage,
+} from "../../pages/calculator";
 
 function pluralize(number: number, word: string, plural?: string) {
   if (number == 1) {
@@ -39,11 +42,7 @@ function personSubtext(
 
   ret += `, retire at ${retireYears}, `;
 
-  if (deathRates.type == "builtin") {
-    ret += deathRates.gender === Gender.Male ? "male" : "female";
-  } else {
-    ret += "custom";
-  }
+  ret += deathRates.gender === Gender.Male ? "male" : "female";
   ret += " mortality table";
 
   return ret;
@@ -97,9 +96,9 @@ function taxesSubtext(taxes: TaxSettings) {
   }
 }
 
-type CalculatorSettingsProps = { onChangeSubpage: (Subpage) => void };
-
-export default function CalculatorSettings(props: CalculatorSettingsProps) {
+export default function CalculatorSettings(
+  props: CalculatorSettingsSubpageProps
+) {
   const person = useAppSelector((state) => state.simulation.person);
   const careerPeriods = useAppSelector(
     (state) => state.simulation.careerPeriods
@@ -134,7 +133,7 @@ export default function CalculatorSettings(props: CalculatorSettingsProps) {
   return (
     <SettingsGroup title="Calculator Settings">
       <Setting name="Person" subtext={personSub}>
-        <EditButton onClick={() => props.onChangeSubpage(Subpage.PERSON)} />
+        <EditButton onClick={() => props.changeSubpage(Subpage.PERSON)} />
       </Setting>
       <Setting name="Job" subtext={jobSub}>
         <EditButton />

@@ -1,4 +1,4 @@
-import { MdChevronRight } from "react-icons/md";
+import { MdChevronRight, MdChevronLeft } from "react-icons/md";
 
 type SettingsGroupProps = React.PropsWithChildren<{ title: string }>;
 
@@ -27,9 +27,9 @@ export function Setting(props: SettingProps) {
   );
 }
 
-type EditButtonProps = { onClick?: React.MouseEventHandler<HTMLElement> };
+type ButtonProps = { onClick?: React.MouseEventHandler<HTMLElement> };
 
-export function EditButton(props: EditButtonProps) {
+export function EditButton(props: ButtonProps) {
   return (
     <button
       onClick={props.onClick}
@@ -37,6 +37,18 @@ export function EditButton(props: EditButtonProps) {
     >
       Edit
       <MdChevronRight />
+    </button>
+  );
+}
+
+export function BackButton(props: ButtonProps) {
+  return (
+    <button
+      onClick={props.onClick}
+      className="pl-3 pt-2 text-accent hover:underline cursor-pointer whitespace-nowrap flex items-center justify-center"
+    >
+      <MdChevronLeft />
+      Back
     </button>
   );
 }

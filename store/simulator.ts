@@ -54,15 +54,10 @@ export type JobSettings = {
 
 export { Gender } from "@conman124/retirement";
 
-export type DeathRates =
-  | {
-      type: "builtin";
-      gender: WasmTypes.Gender;
-    }
-  | {
-      type: "custom";
-      annualDeathRates: number[];
-    };
+export type DeathRates = {
+  type: "builtin";
+  gender: WasmTypes.Gender;
+};
 
 export type PersonSettings = {
   ageYears: number;
@@ -107,7 +102,7 @@ export type PartialSimulation = Omit<
 };
 
 const initialState: PartialSimulation = {
-  seed: 0,
+  seed: undefined,
   count: 1000,
   rates: "builtin",
   ratesSublength: 12,
@@ -162,5 +157,7 @@ export const {
   setTaxSettings,
   setSimulation,
 } = simulationSlice.actions;
+
+export const actionCreators = simulationSlice.actions;
 
 export default simulationSlice.reducer;

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import CalculatorSettings from "../components/calculator/CalculatorSettings";
+import PersonSettings from "../components/calculator/PersonSettings";
+import { useRouter } from "next/router";
 
 export enum Subpage {
   MAIN,
@@ -9,14 +11,20 @@ export enum Subpage {
   TAX,
 }
 
+export type CalculatorSettingsSubpageProps = {
+  changeSubpage: (Subpage) => void;
+  runSimulations: () => void;
+};
+
 export default function Calculator() {
   let [subpage, setSubpage] = useState(Subpage.MAIN);
+  let router = useRouter();
 
   let map: {
-    [subpage in Subpage]: React.FC<{ onChangeSubpage: (Subpage) => void }>;
+    [subpage in Subpage]: React.FC<CalculatorSettingsSubpageProps>;
   } = {
     [Subpage.MAIN]: CalculatorSettings,
-    [Subpage.PERSON]: CalculatorSettings, // TODO
+    [Subpage.PERSON]: PersonSettings,
     [Subpage.JOB]: CalculatorSettings, // TODO
     [Subpage.RATES]: CalculatorSettings, // TODO
     [Subpage.TAX]: CalculatorSettings, // TODO
@@ -24,5 +32,16 @@ export default function Calculator() {
 
   let component = map[subpage];
 
-  return component({ onChangeSubpage: setSubpage });
+  function runSimulations() {
+    void router.push("/calculator");
+  }
+
+  return (
+    <>
+      {React.createElement(component, {
+        changeSubpage: setSubpage,
+        runSimulations,
+      })}
+    </>
+  );
 }

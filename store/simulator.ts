@@ -17,7 +17,8 @@ export type AssetAllocation =
 
 export type AccountSettings = {
   startingBalance: number;
-  allocation: AssetAllocation;
+  // TODO add allocation
+  //allocation: AssetAllocation;
 };
 
 export { AccountContributionSource } from "@conman124/retirement";

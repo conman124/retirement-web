@@ -74,10 +74,7 @@ function jobSubtext({
     raiseDesc += " + inflation";
   }
 
-  let accountsDesc =
-    ", " + pluralize(accountContributionSettings.length, "account");
-
-  return salaryDesc + ficaDesc + raiseDesc + accountsDesc;
+  return salaryDesc + ficaDesc + raiseDesc;
 }
 
 function ratesSubtext(rates: RatesSource, ratesSublength: number) {
@@ -136,7 +133,7 @@ export default function CalculatorSettings(
         <EditButton onClick={() => props.changeSubpage(Subpage.PERSON)} />
       </Setting>
       <Setting name="Job" subtext={jobSub}>
-        <EditButton />
+        <EditButton onClick={() => props.changeSubpage(Subpage.JOB)} />
       </Setting>
       <Setting name="Market rates" subtext={ratesSub}>
         <EditButton />

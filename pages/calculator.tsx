@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import CalculatorSettings from "../components/calculator/CalculatorSettings";
 import PersonSettings from "../components/calculator/PersonSettings";
+import JobSettings from "../components/calculator/JobSettings";
 import { useRouter } from "next/router";
 
 export enum Subpage {
@@ -25,7 +26,7 @@ export default function Calculator() {
   } = {
     [Subpage.MAIN]: CalculatorSettings,
     [Subpage.PERSON]: PersonSettings,
-    [Subpage.JOB]: CalculatorSettings, // TODO
+    [Subpage.JOB]: JobSettings,
     [Subpage.RATES]: CalculatorSettings, // TODO
     [Subpage.TAX]: CalculatorSettings, // TODO
   };

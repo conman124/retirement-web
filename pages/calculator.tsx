@@ -35,7 +35,7 @@ export default function Calculator() {
     let component = map[subpage];
 
     function runSimulations() {
-        void router.push("/calculator");
+        void router.push("/graph");
     }
 
     return (

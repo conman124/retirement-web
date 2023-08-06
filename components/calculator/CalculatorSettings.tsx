@@ -13,6 +13,7 @@ import {
     CalculatorSettingsSubpageProps,
     Subpage,
 } from "../../pages/calculator";
+import React from "react";
 
 function pluralize(number: number, word: string, plural?: string) {
     if (number == 1) {
@@ -115,6 +116,14 @@ function taxesSubtext(taxes: TaxSettings) {
     return "";
 }
 
+function readyToRun(person, job, rates, taxSettings) {
+    // TODO do I need anything more than this?
+    if (person && job && rates && taxSettings) {
+        return true;
+    }
+    return false;
+}
+
 export default function CalculatorSettings(
     props: CalculatorSettingsSubpageProps
 ) {
@@ -150,44 +159,59 @@ export default function CalculatorSettings(
     }
 
     return (
-        <SettingsGroup title="Calculator Settings">
-            <Setting name="Person" subtext={personSub}>
-                <EditButton
-                    onClick={() => props.changeSubpage(Subpage.PERSON)}
-                />
-            </Setting>
-            <Setting name="Job" subtext={jobSub}>
-                <EditButton onClick={() => props.changeSubpage(Subpage.JOB)} />
-            </Setting>
-            <Setting name="Market rates" subtext={ratesSub}>
-                <EditButton />
-            </Setting>
-            <Setting name="Taxes" subtext={taxSub}>
-                <EditButton onClick={() => props.changeSubpage(Subpage.TAX)} />
-            </Setting>
-            <Setting name="Run count">
-                <input
-                    type="number"
-                    min="1"
-                    placeholder="Run count"
-                    className="input input-bordered w-full max-w-xs"
-                    value={runCount}
-                    onChange={(e) =>
-                        dispatch(setCount(parseInt(e.target.value) || 1))
-                    }
-                />
-            </Setting>
-            <Setting name="Seed">
-                <input
-                    type="number"
-                    placeholder="Seed"
-                    className="input input-bordered w-full max-w-xs"
-                    value={typeof seed === "undefined" ? "" : seed}
-                    onChange={(e) =>
-                        dispatch(setSeed(parseInt(e.target.value) || undefined))
-                    }
-                />
-            </Setting>
-        </SettingsGroup>
+        <div className="relative">
+            <SettingsGroup title="Calculator Settings">
+                <Setting name="Person" subtext={personSub}>
+                    <EditButton
+                        onClick={() => props.changeSubpage(Subpage.PERSON)}
+                    />
+                </Setting>
+                <Setting name="Job" subtext={jobSub}>
+                    <EditButton
+                        onClick={() => props.changeSubpage(Subpage.JOB)}
+                    />
+                </Setting>
+                <Setting name="Market rates" subtext={ratesSub}>
+                    <EditButton />
+                </Setting>
+                <Setting name="Taxes" subtext={taxSub}>
+                    <EditButton
+                        onClick={() => props.changeSubpage(Subpage.TAX)}
+                    />
+                </Setting>
+                <Setting name="Run count">
+                    <input
+                        type="number"
+                        min="1"
+                        placeholder="Run count"
+                        className="input input-bordered w-full max-w-xs"
+                        value={runCount}
+                        onChange={(e) =>
+                            dispatch(setCount(parseInt(e.target.value) || 1))
+                        }
+                    />
+                </Setting>
+                <Setting name="Seed">
+                    <input
+                        type="number"
+                        placeholder="Seed"
+                        className="input input-bordered w-full max-w-xs"
+                        value={typeof seed === "undefined" ? "" : seed}
+                        onChange={(e) =>
+                            dispatch(
+                                setSeed(parseInt(e.target.value) || undefined)
+                            )
+                        }
+                    />
+                </Setting>
+            </SettingsGroup>
+            <button
+                className="absolute right-0 m-3 btn btn-secondary"
+                onClick={props.runSimulations}
+                disabled={!readyToRun(person, job, rates, taxes)}
+            >
+                Run simulation
+            </button>
+        </div>
     );
 }

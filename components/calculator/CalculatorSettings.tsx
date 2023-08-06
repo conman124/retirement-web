@@ -89,8 +89,36 @@ function ratesSubtext(rates: RatesSource, ratesSublength: number) {
 
 function taxesSubtext(taxes: TaxSettings) {
     if (taxes) {
-        return "Tax settings entered";
+        let ret = "";
+        switch (taxes.filingStatus) {
+            case "head_of_household":
+                ret += "Head of household, ";
+                break;
+            case "married_joint":
+                ret += "Married filing jointly, ";
+                break;
+            case "single":
+                ret += "Single, ";
+                break;
+        }
+        if (
+            !taxes.adjustBracketFloorsForInflation &&
+            !taxes.adjustBracketFloorsForInflation
+        ) {
+            ret += "don't adjust for inflation";
+        } else if (
+            taxes.adjustBracketFloorsForInflation &&
+            taxes.adjustDeductionForInflation
+        ) {
+            ret += "adjust brackets and deduction for inflation";
+        } else if (taxes.adjustBracketFloorsForInflation) {
+            ret += "adjust brackets for inflation";
+        } else {
+            ret += "adjust deduction for inflation";
+        }
+        return ret;
     }
+    return "";
 }
 
 export default function CalculatorSettings(

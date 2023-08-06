@@ -28,17 +28,11 @@ function personSubtext(
     { ageYears, ageMonths, deathRates }: PersonSettings,
     careerPeriods
 ) {
-    if (ageMonths >= 6) {
-        ++ageYears;
-    }
     let ret = pluralize(ageYears, "year");
 
     let retireMonthsTotal = ageYears * 12 + ageMonths + careerPeriods;
     let retireYears = Math.floor(retireMonthsTotal / 12);
     let retireMonths = retireMonthsTotal % 12;
-    if (retireMonths >= 6) {
-        ++retireYears;
-    }
 
     ret += `, retire at ${retireYears}, `;
 

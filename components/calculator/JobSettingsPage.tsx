@@ -18,10 +18,10 @@ export default function PersonSettings(props: CalculatorSettingsSubpageProps) {
     const dispatch = useAppDispatch();
     const job = useAppSelector((state) => state.simulation.job);
     const [salary, setSalary] = useState(
-        job ? "" + job.startingGrossIncome : ""
+        job ? "" + job.startingAnnualGrossIncome : ""
     );
     const [raise, setRaise] = useState(
-        job ? "" + Math.round(job.raiseSettings.amount * 100) : ""
+        job ? "" + Math.round(job.raiseSettings.amount * 100 - 100) : ""
     );
     const [inflationRaise, setInflationRaise] = useState(
         job ? job.raiseSettings.adjustForInflation : false
@@ -162,13 +162,13 @@ export default function PersonSettings(props: CalculatorSettingsSubpageProps) {
 
             dispatch(
                 setJob({
-                    startingGrossIncome: parseFloat(salary),
+                    startingAnnualGrossIncome: parseFloat(salary),
                     fica: {
                         type: "participant",
                         ssRate: 0.13,
                     },
                     raiseSettings: {
-                        amount: parseFloat(raise) / 100,
+                        amount: parseFloat(raise) / 100 + 1,
                         adjustForInflation: inflationRaise,
                     },
                     accountContributionSettings: accounts,

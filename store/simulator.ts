@@ -47,7 +47,7 @@ export type Fica =
       };
 
 export type JobSettings = {
-    startingGrossIncome: number;
+    startingAnnualGrossIncome: number;
     fica: Fica;
     raiseSettings: RaiseSettings;
     accountContributionSettings: AccountContributionSettings[];

@@ -33,7 +33,6 @@ function personSubtext(
 
     let retireMonthsTotal = ageYears * 12 + ageMonths + careerPeriods;
     let retireYears = Math.floor(retireMonthsTotal / 12);
-    let retireMonths = retireMonthsTotal % 12;
 
     ret += `, retire at ${retireYears}, `;
 
@@ -44,12 +43,12 @@ function personSubtext(
 }
 
 function jobSubtext({
-    startingGrossIncome,
+    startingAnnualGrossIncome,
     fica,
     raiseSettings,
     accountContributionSettings,
 }: JobSettings) {
-    let salaryDesc = startingGrossIncome.toLocaleString(undefined, {
+    let salaryDesc = startingAnnualGrossIncome.toLocaleString(undefined, {
         currency: "USD",
         currencyDisplay: "narrowSymbol",
         style: "currency",
@@ -64,7 +63,7 @@ function jobSubtext({
     }
 
     let raiseDesc = ", ";
-    raiseDesc += Math.round(raiseSettings.amount * 100) + "% raise";
+    raiseDesc += Math.round(raiseSettings.amount * 100 - 100) + "% raise";
     if (raiseSettings.adjustForInflation) {
         raiseDesc += " + inflation";
     }

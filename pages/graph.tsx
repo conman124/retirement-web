@@ -1,6 +1,6 @@
 import { useRef, useEffect, Suspense } from "react";
 import dynamic from "next/dynamic";
-import { graph, getSimulationFromSettings, testingSimulation } from "../graph";
+import { graph, getSimulationFromSettings } from "../graph";
 import { useAppSelector } from "../store/hooks";
 import { useRouter } from "next/router";
 import { isSimulationReady } from "../store/simulator";

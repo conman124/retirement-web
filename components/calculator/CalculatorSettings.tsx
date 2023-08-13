@@ -8,6 +8,7 @@ import {
     TaxSettings,
     setSeed,
     setCount,
+    isSimulationReady,
 } from "../../store/simulator";
 import {
     CalculatorSettingsSubpageProps,
@@ -115,14 +116,6 @@ function taxesSubtext(taxes: TaxSettings) {
     return "";
 }
 
-function readyToRun(person, job, rates, taxSettings) {
-    // TODO do I need anything more than this?
-    if (person && job && rates && taxSettings) {
-        return true;
-    }
-    return false;
-}
-
 export default function CalculatorSettings(
     props: CalculatorSettingsSubpageProps
 ) {
@@ -138,6 +131,7 @@ export default function CalculatorSettings(
     const taxes = useAppSelector((state) => state.simulation.taxSettings);
     const runCount = useAppSelector((state) => state.simulation.count);
     const seed = useAppSelector((state) => state.simulation.seed);
+    const readyToRun = useAppSelector(isSimulationReady);
     const dispatch = useAppDispatch();
 
     let personSub = "";
@@ -207,7 +201,7 @@ export default function CalculatorSettings(
             <button
                 className="absolute right-0 m-3 btn btn-secondary"
                 onClick={props.runSimulations}
-                disabled={!readyToRun(person, job, rates, taxes)}
+                disabled={!readyToRun}
             >
                 Run simulation
             </button>

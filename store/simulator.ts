@@ -160,3 +160,8 @@ export const {
 export const actionCreators = simulationSlice.actions;
 
 export default simulationSlice.reducer;
+
+export function isSimulationReady(state) {
+    // TODO do I have to do anything more than this?
+    return state.person && state.job && state.rates && state.taxSettings;
+}

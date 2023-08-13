@@ -29,7 +29,7 @@ const GraphDynamic = dynamic({
 
                 svg.current.replaceChildren([]);
                 graph(simulation, svg.current, 50, 600, 300, false);
-            }, []);
+            }, [readyToRun, simulationState]);
 
             return (
                 <div className="flex justify-center">

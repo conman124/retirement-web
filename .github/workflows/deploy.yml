@@ -7,7 +7,7 @@ on:
 
 env:
   GH_REPO_USER: conman124
-  NODE_AUTH_TOKEN: {secrets.GH_REPO_TOKEN}
+  NODE_AUTH_TOKEN: "{secrets.GH_REPO_TOKEN}"
 
 jobs:
   deployment:

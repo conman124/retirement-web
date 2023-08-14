@@ -5,10 +5,6 @@ on:
     branches:
       - main
 
-env:
-  GH_REPO_USER: conman124
-  NODE_AUTH_TOKEN: "{secrets.GH_REPO_TOKEN}"
-
 jobs:
   deployment:
     runs-on: ubuntu-latest
@@ -21,8 +17,12 @@ jobs:
         with:
           node-version: 18
           registry-url: https://npm.pkg.github.com
+          scope: '@conman124'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_REPO_TOKEN }}
       - name: Run npm ci
         run: npm ci
+        env: NODE_AUTH_TOKEN: ${{ secrets.GH_REPO_TOKEN }}
       - name: Run build and export
         run: npx next build && npx next export
       - name: Configure AWS credentials

@@ -1,0 +1,32 @@
+name: Deploy to dev
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: read
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          registry-url: https://npm.pkg.github.com
+      - name: Run npm install
+        run: npm init
+      - name: Run build and export
+        run: npx next build && npx next export
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::523041740607:role/DeployRetirelabsDevRole
+          aws-region: us-east-2
+      - name: Copy files to S3
+        run: aws s3 cp ./out/* s3://retirelabs-dev
+      - name: Invalidate files in Cloudformation
+        run: aws cloudfront create-invalidation --distribution-id E8TF9G7Y6UPE9 --paths "/*.*"

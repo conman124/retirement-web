@@ -32,6 +32,6 @@ jobs:
           role-to-assume: arn:aws:iam::523041740607:role/DeployRetirelabsDevRole
           aws-region: us-east-2
       - name: Copy files to S3
-        run: aws s3 cp ./out/* s3://retirelabs-dev
+        run: aws s3 sync ./out s3://retirelabs-dev
       - name: Invalidate files in Cloudformation
         run: aws cloudfront create-invalidation --distribution-id E8TF9G7Y6UPE9 --paths "/*.*"

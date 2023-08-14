@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+env:
+  GH_REPO_USER: conman124
+
 jobs:
   deployment:
     runs-on: ubuntu-latest
@@ -16,9 +19,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-          registry-url: https://npm.pkg.github.com
-      - name: Run npm install
-        run: npm install
+          registry-url: https://{env.GH_REPO_USER}:{secrets.GH_REPO_TOKEN}@npm.pkg.github.com
+      - name: Run npm ci
+        run: npm ci
       - name: Run build and export
         run: npx next build && npx next export
       - name: Configure AWS credentials

@@ -18,7 +18,7 @@ jobs:
           node-version: 18
           registry-url: https://npm.pkg.github.com
       - name: Run npm install
-        run: npm init
+        run: npm install
       - name: Run build and export
         run: npx next build && npx next export
       - name: Configure AWS credentials

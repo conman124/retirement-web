@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 import * as WasmTypes from "@conman124/retirement";
+import { RootState } from ".";
 
 export type AssetAllocation =
     | {
@@ -161,7 +162,11 @@ export const actionCreators = simulationSlice.actions;
 
 export default simulationSlice.reducer;
 
-export function isSimulationReady(state) {
-    // TODO do I have to do anything more than this?
-    return state.person && state.job && state.rates && state.taxSettings;
+export function isSimulationReady(state: RootState) {
+    return (
+        state.simulation.person &&
+        state.simulation.job &&
+        state.simulation.rates &&
+        state.simulation.taxSettings
+    );
 }

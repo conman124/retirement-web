@@ -22,7 +22,8 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GH_REPO_TOKEN }}
       - name: Run npm ci
         run: npm ci
-        env: NODE_AUTH_TOKEN: ${{ secrets.GH_REPO_TOKEN }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_REPO_TOKEN }}
       - name: Run build and export
         run: npx next build && npx next export
       - name: Configure AWS credentials

@@ -1,0 +1,14 @@
+name: Deploy to prod
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-dev:
+    uses: ./.github/workflows/deploy.yml
+    with:
+      aws-role: arn:aws:iam::523041740607:role/DeployRetirelabsProdRole
+      aws-region: us-east-2
+      aws-bucket: retirelabs
+      aws-distribution: E9KOBCRT9MI7N
+    secrets: inherit

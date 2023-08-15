@@ -1,10 +1,23 @@
-name: Deploy to dev
-
+name: Deploy
 
 on:
-  push:
-    branches:
-      - main
+  workflow_call:
+    inputs:
+      aws-role:
+        required: true
+        type: string
+      aws-region:
+        required: true
+        type: string
+      aws-bucket:
+        required: true
+        type: string
+      aws-distribution:
+        required: true
+        type: string
+    secrets:
+      GH_REPO_TOKEN:
+        required: true
 
 jobs:
   deployment:
@@ -30,9 +43,9 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: arn:aws:iam::523041740607:role/DeployRetirelabsDevRole
-          aws-region: us-east-2
+          role-to-assume: ${{ inputs.aws-role }}
+          aws-region: ${{ inputs.aws-region }}
       - name: Copy files to S3
-        run: aws s3 sync ./out s3://retirelabs-dev
+        run: aws s3 sync ./out s3://${{ inputs.aws-bucket }}
       - name: Invalidate files in Cloudformation
-        run: aws cloudfront create-invalidation --distribution-id E8TF9G7Y6UPE9 --paths "/*.*"
+        run: aws cloudfront create-invalidation --distribution-id ${{ inputs.aws-distribution }} --paths "/*.*"

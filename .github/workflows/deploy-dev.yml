@@ -1,0 +1,16 @@
+name: Deploy to dev
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-dev:
+    uses: ./.github/workflows/deploy.yml
+    with:
+      aws-role: arn:aws:iam::523041740607:role/DeployRetirelabsDevRole
+      aws-region: us-east-2
+      aws-bucket: retirelabs-dev
+      aws-distribution: E8TF9G7Y6UPE9
+    secrets: inherit

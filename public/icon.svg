@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="120.94" height="120.94" version="1.1" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <g transform="matrix(1.0667 0 0 1.0667 0 -2.1333)">
+  <path x="0" y="2" width="30" height="30" rx="4.6678896" ry="4.6678896" d="m4.6679 2h20.664c2.586 0 4.6679 2.0819 4.6679 4.6679v20.664c0 2.586-2.0819 4.6679-4.6679 4.6679h-20.664c-2.586 0-4.6679-2.0819-4.6679-4.6679v-20.664c0-2.586 2.0819-4.6679 4.6679-4.6679z" fill="#0c3e4d" opacity=".96764" stroke-width=".25994"/>
+  <path d="m15 5.3765h-3.3868v7.0586s-0.12458 1.4635-0.59812 2.208c-1.2455 1.9581-7.0833 10.442-7.0833 10.442s-2.1702 3.5387 0.052276 3.5387h11.016m7e-6 -23.247h3.3868v7.0586s0.12458 1.4635 0.59812 2.208c1.2455 1.9581 7.0833 10.442 7.0833 10.442s2.1702 3.5387-0.05227 3.5387h-11.016" fill="#fff" opacity=".95276"/>
+  <text x="10.836275" y="26.273176" fill="#267122" font-family="Arial" font-size="15.119px" stroke-width=".37798" style="line-height:1.25" xml:space="preserve"><tspan x="10.836275" y="26.273176" fill="#267122" font-family="Arial" stroke-width=".37798">$</tspan></text>
+ </g>
+</svg>

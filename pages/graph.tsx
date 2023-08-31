@@ -10,7 +10,24 @@ const GraphDynamic = dynamic({
         const RetirementModule = await import("@conman124/retirement");
 
         return function Graph() {
-            const svg = useRef(null);
+            const svgs = [
+                useRef(null),
+                useRef(null),
+                useRef(null),
+                useRef(null),
+            ];
+            const graphParams: [number, number, number, boolean][] = [
+                [30, 360, 300, true],
+                [50, 640, 360, true],
+                [50, 768, 432, false],
+                [70, 1024, 476, false],
+            ];
+            const svgClasses = [
+                ["sm:hidden"],
+                ["hidden", "sm:block", "md:hidden"],
+                ["hidden", "md:block", "lg:hidden"],
+                ["hidden", "lg:block"],
+            ];
             const router = useRouter();
 
             const simulationState = useAppSelector((state) => state.simulation);
@@ -27,13 +44,21 @@ const GraphDynamic = dynamic({
                     simulationState
                 ); // TODO figure out a way to keep seed the same within a session
 
-                svg.current.replaceChildren([]);
-                graph(simulation, svg.current, 50, 600, 300, false);
+                svgs.forEach((svg, i) => {
+                    svg.current.replaceChildren([]);
+                    graph(simulation, svg.current, ...graphParams[i]);
+                });
             }, [readyToRun, simulationState]);
 
             return (
                 <div className="flex justify-center">
-                    <svg ref={svg} />
+                    {svgs.map((svg, i) => (
+                        <svg
+                            ref={svg}
+                            className={svgClasses[i].join(" ")}
+                            key={i}
+                        ></svg>
+                    ))}
                 </div>
             );
         };

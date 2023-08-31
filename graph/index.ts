@@ -152,7 +152,7 @@ export function graph(
     const time = d3
         .scaleUtc()
         .domain([dates[0], dates[dates.length - 1]])
-        .range([margin.left, width - margin.right]);
+        .range([margin.left, width - margin.right]); // TODO pick better spacing for small
     const money = d3
         .scaleLinear()
         .domain([0, maxBalance])

@@ -3,9 +3,6 @@ import * as d3 from "d3";
 import { Simulation as SimulationSettings } from "../store/simulator";
 import { getTextDimensions } from "./textDim";
 
-const ANIMATION_RUNWAY_TIME = 2000;
-const ANIMATION_TOTAL_TIME = 0;
-
 export function getSimulationFromSettings(
     retirement: typeof import("@conman124/retirement"),
     simulationSettings: SimulationSettings
@@ -106,25 +103,31 @@ export function getSimulationFromSettings(
     return simulation;
 }
 
-export function graph(
+export function createGraph(
     simulation: import("@conman124/retirement").Simulation,
     svgEl: SVGElement,
     showSimCount: number,
     width: number,
     height: number,
-    abbreviateLabels: boolean
+    abbreviateLabels: boolean,
+    {
+        ANIMATION_RUNWAY_TIME,
+        ANIMATION_TIME,
+    }: { ANIMATION_RUNWAY_TIME: number; ANIMATION_TIME: number }
 ) {
-    let maxLen = 0;
+    const ANIMATION_TOTAL_TIME = ANIMATION_RUNWAY_TIME + ANIMATION_TIME;
+
+    let lifetime = 0;
     let maxBalance = 0;
     for (let i = 0; i < showSimCount; ++i) {
         let balance = simulation.get_account_balance_for_run(i, 0); // TODO need to add all balances
-        maxLen = Math.max(maxLen, balance.length);
+        lifetime = Math.max(lifetime, balance.length);
         maxBalance = Math.max(maxBalance, d3.max(balance));
     }
 
     let dates = [];
     let curDate = new Date();
-    for (let i = 0; i < maxLen; ++i) {
+    for (let i = 0; i < lifetime; ++i) {
         dates[i] = new Date(curDate.getFullYear(), curDate.getMonth() + i, 1);
     }
 
@@ -162,43 +165,23 @@ export function graph(
         .x(([, d]) => time(d))
         .y(([d]) => money(d));
 
+    const successful = [];
+
     for (let i = 0; i < showSimCount; ++i) {
         const data_joined = Array.prototype.map.call(
             simulation.get_account_balance_for_run(i, 0), // TODO need to add all balances
             (balance, index) => [balance, dates[index]]
         );
-        const successful =
+        successful.push(
             simulation.assets_adequate_periods_for_run(i) >=
-            simulation.lifespan_for_run(i).periods();
+                simulation.lifespan_for_run(i).periods()
+        );
 
         svg.append("path")
             .attr("fill", "none")
-            .attr(
-                "stroke",
-                successful ? "rgba(0, 255, 0, 0.4)" : "rgb(255, 0, 0, 0.4)"
-            )
             .attr("stroke-width", "1")
             .attr("stroke-miterlimit", "1")
-            .attr("stroke-dasharray", "0,1")
-            .attr("d", line(data_joined))
-            .transition()
-            .delay(ANIMATION_RUNWAY_TIME * (i / showSimCount))
-            .duration(function () {
-                const pct =
-                    simulation.assets_adequate_periods_for_run(i) / maxLen;
-                return (ANIMATION_TOTAL_TIME - ANIMATION_RUNWAY_TIME) * pct;
-            })
-            .ease(d3.easeLinear)
-            .attrTween("stroke-dasharray", function () {
-                const length = this.getTotalLength();
-                return d3.interpolate(`0,${length}`, `${length},${length}`);
-            })
-            .attrTween("stroke", () =>
-                d3.interpolate(
-                    "rgba(128, 128, 128, 0.4)",
-                    successful ? "rgba(0, 255, 0, 0.4)" : "rgb(255, 0, 0, 0.4)"
-                )
-            );
+            .attr("d", line(data_joined));
     }
 
     function styleAxes(el) {
@@ -222,4 +205,81 @@ export function graph(
     svg.append("g").call(xAxis);
 
     svg.append("g").call(yAxis);
+
+    const successful_interpolator = d3.interpolate(
+        "rgba(128, 128, 128, 0.4)",
+        "rgba(0, 255, 0, 0.4)"
+    );
+    const unsuccessful_interpolator = d3.interpolate(
+        "rgba(128, 128, 128, 0.4)",
+        "rgb(255, 0, 0, 0.4)"
+    );
+
+    function update(t_in) {
+        svg.selectChildren("path").each((_, i, paths: SVGPathElement[]) => {
+            const t_unscaled = t_in * ANIMATION_TOTAL_TIME;
+            const delay = ANIMATION_RUNWAY_TIME * (i / showSimCount);
+            let t_undelayed;
+            if (delay >= t_unscaled) {
+                t_undelayed = 0;
+            } else {
+                t_undelayed = (t_unscaled - delay) / ANIMATION_TIME;
+                t_undelayed = Math.min(Math.max(0, t_undelayed), 1);
+            }
+            const t = d3.easeLinear(t_undelayed);
+            const length = paths[i].getTotalLength();
+
+            d3.select(paths[i]).attr(
+                "stroke-dasharray",
+                d3.interpolate(`0,${length}`, `${length},${length}`)(t)
+            );
+            d3.select(paths[i]).attr(
+                "stroke",
+                (successful[i]
+                    ? successful_interpolator
+                    : unsuccessful_interpolator)(t)
+            );
+        });
+    }
+
+    update(0);
+
+    return {
+        svg,
+        update,
+    };
+}
+
+export function graph(
+    simulation: import("@conman124/retirement").Simulation,
+    svgEl: SVGElement,
+    showSimCount: number,
+    width: number,
+    height: number,
+    abbreviateLabels: boolean,
+    {
+        ANIMATION_RUNWAY_TIME,
+        ANIMATION_TIME,
+    }: { ANIMATION_RUNWAY_TIME: number; ANIMATION_TIME: number }
+) {
+    const ANIMATION_TOTAL_TIME = ANIMATION_RUNWAY_TIME + ANIMATION_TIME;
+
+    const { update } = createGraph(
+        simulation,
+        svgEl,
+        showSimCount,
+        width,
+        height,
+        abbreviateLabels,
+        { ANIMATION_RUNWAY_TIME, ANIMATION_TIME }
+    );
+
+    const timer = d3.timer((elapsed) => {
+        const t = Math.min(1, elapsed / ANIMATION_TOTAL_TIME);
+        update(t);
+
+        if (elapsed >= ANIMATION_TOTAL_TIME) {
+            timer.stop();
+        }
+    });
 }

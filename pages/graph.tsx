@@ -46,7 +46,10 @@ const GraphDynamic = dynamic({
 
                 svgs.forEach((svg, i) => {
                     svg.current.replaceChildren([]);
-                    graph(simulation, svg.current, ...graphParams[i]);
+                    graph(simulation, svg.current, ...graphParams[i], {
+                        ANIMATION_RUNWAY_TIME: 2000,
+                        ANIMATION_TIME: 0,
+                    });
                 });
             }, [readyToRun, simulationState]);
 
@@ -66,7 +69,7 @@ const GraphDynamic = dynamic({
     ssr: false,
 });
 
-export default function Graph() {
+export default function GraphPage() {
     return (
         <Suspense fallback="Loading...">
             <GraphDynamic />

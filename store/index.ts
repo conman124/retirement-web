@@ -1,13 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { simulationSlice, actionCreators } from "./simulator";
+import { simulationSlice, actionCreators } from "./simulator.js";
 
 const store = configureStore({
-  reducer: {
-    [simulationSlice.name]: simulationSlice.reducer,
-  },
-  devTools: process.env.NODE_ENV !== "production" && {
-    actionCreators,
-  },
+    reducer: {
+        [simulationSlice.name]: simulationSlice.reducer,
+    },
+    devTools: process.env.NODE_ENV !== "production" && {
+        actionCreators,
+    },
 });
 
 export default store;

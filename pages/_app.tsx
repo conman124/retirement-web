@@ -3,7 +3,7 @@ import Link from "next/link";
 import { AppProps } from "next/app";
 import { Provider } from "react-redux";
 import "../styles/globals.css";
-import store from "../store";
+import store from "../store/index.js";
 
 function MyApp({ Component, pageProps }: AppProps) {
     return (

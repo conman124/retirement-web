@@ -1,16 +1,16 @@
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { SettingsGroup, Setting, BackButton } from "./SettingsGroup";
+import { useAppDispatch, useAppSelector } from "../../store/hooks.js";
+import { SettingsGroup, Setting, BackButton } from "./SettingsGroup.js";
 import {
     CalculatorSettingsSubpageProps,
     Subpage,
-} from "../../pages/calculator";
+} from "../../pages/calculator.js";
 import { Dispatch, SetStateAction, useState } from "react";
 import {
     AccountContributionSettings,
     AccountContributionSource,
     AccountContributionTaxability,
     setJob,
-} from "../../store/simulator";
+} from "../../store/simulator.js";
 
 // TODO fix rounding percentage throughout
 

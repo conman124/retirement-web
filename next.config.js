@@ -45,6 +45,7 @@ function addWasmDeployHack(config, { isServer }) {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    runtime: "experimental-edge",
     reactStrictMode: true,
     swcMinify: true,
     experimental: {
@@ -57,8 +58,14 @@ const nextConfig = {
             test: [/\.csv$/],
             type: "asset/source",
         });
+        config.resolve.extensionAlias = {
+            ".js": [".ts", ".tsx", ".js", ".jsx"],
+            ".mjs": [".mts", ".mjs"],
+            ".cjs": [".cts", ".cjs"],
+        };
 
-        addWasmDeployHack(config, ctx);
+        // This seems to no longer be required, but leaving just in case
+        //addWasmDeployHack(config, ctx);
 
         // Important: return the modified config
         return config;

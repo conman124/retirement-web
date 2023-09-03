@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 import * as WasmTypes from "@conman124/retirement";
-import { RootState } from ".";
+import { RootState } from "./index.js";
 
 export type AssetAllocation =
     | {

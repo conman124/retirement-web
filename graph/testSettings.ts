@@ -1,5 +1,5 @@
-import deathCSV from "../data/test_death.csv";
-import ratesCSV from "../data/test_rates.csv";
+import deathCSV from "../data/test_death.js";
+import ratesCSV from "../data/test_rates.js";
 
 // Due to a bug in the original regression that this is based on, we have to skip the
 // first entry in the death rates

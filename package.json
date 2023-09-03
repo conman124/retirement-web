@@ -3,16 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "NODE_OPTIONS=--experimental-wasm-modules next dev",
+    "build": "NODE_OPTIONS=--experimental-wasm-modules next build",
     "lint": "next lint",
     "prepare": "husky install"
   },
   "dependencies": {
-    "@conman124/retirement": "^0.0.7",
+    "@conman124/retirement": "^0.0.9",
     "@reduxjs/toolkit": "^1.8.5",
     "@types/d3": "^7.4.0",
+    "canvas": "^2.11.2",
+    "cli-progress": "^3.12.0",
     "d3": "^7.6.1",
     "daisyui": "^2.31.0",
     "next": "12.2.5",
@@ -20,7 +21,10 @@
     "react-daisyui": "^2.4.2",
     "react-dom": "18.2.0",
     "react-icons": "^4.7.1",
-    "react-redux": "^8.0.2"
+    "react-redux": "^8.0.2",
+    "svgdom": "^0.1.14",
+    "typescript": "^5.2.2",
+    "underscore": "^1.13.6"
   },
   "devDependencies": {
     "@types/node": "^18.7.14",

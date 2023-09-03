@@ -1,9 +1,13 @@
 import { useRef, useEffect, Suspense } from "react";
 import dynamic from "next/dynamic";
-import { graph, getSimulationFromSettings } from "../graph";
-import { useAppSelector } from "../store/hooks";
+import {
+    graph,
+    getSimulationFromSettings,
+    graphSizes,
+} from "../graph/index.js";
+import { useAppSelector } from "../store/hooks.js";
 import { useRouter } from "next/router";
-import { isSimulationReady } from "../store/simulator";
+import { isSimulationReady } from "../store/simulator.js";
 
 const GraphDynamic = dynamic({
     loader: async () => {
@@ -15,12 +19,6 @@ const GraphDynamic = dynamic({
                 useRef(null),
                 useRef(null),
                 useRef(null),
-            ];
-            const graphParams: [number, number, number, boolean][] = [
-                [30, 360, 300, true],
-                [50, 640, 360, true],
-                [50, 768, 432, false],
-                [70, 1024, 476, false],
             ];
             const svgClasses = [
                 ["sm:hidden"],
@@ -46,9 +44,9 @@ const GraphDynamic = dynamic({
 
                 svgs.forEach((svg, i) => {
                     svg.current.replaceChildren([]);
-                    graph(simulation, svg.current, ...graphParams[i], {
-                        ANIMATION_RUNWAY_TIME: 2000,
-                        ANIMATION_TIME: 0,
+                    graph(simulation, svg.current, ...graphSizes[i], {
+                        ANIMATION_RUNWAY_TIME: 4000,
+                        ANIMATION_TIME: 3000,
                     });
                 });
             }, [readyToRun, simulationState]);

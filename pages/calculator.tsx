@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import CalculatorSettings from "../components/calculator/CalculatorSettings";
-import PersonSettings from "../components/calculator/PersonSettingsPage";
-import JobSettings from "../components/calculator/JobSettingsPage";
+import CalculatorSettings from "../components/calculator/CalculatorSettings.js";
+import PersonSettings from "../components/calculator/PersonSettingsPage.js";
+import JobSettings from "../components/calculator/JobSettingsPage.js";
 import { useRouter } from "next/router";
-import TaxSettingsPage from "../components/calculator/TaxSettingsPage";
+import TaxSettingsPage from "../components/calculator/TaxSettingsPage.js";
 
 export enum Subpage {
     MAIN,

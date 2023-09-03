@@ -1,11 +1,11 @@
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { SettingsGroup, Setting, BackButton } from "./SettingsGroup";
+import { useAppDispatch, useAppSelector } from "../../store/hooks.js";
+import { SettingsGroup, Setting, BackButton } from "./SettingsGroup.js";
 import {
     CalculatorSettingsSubpageProps,
     Subpage,
-} from "../../pages/calculator";
+} from "../../pages/calculator.js";
 import { Dispatch, SetStateAction, useState } from "react";
-import { TaxSettings, setTaxSettings } from "../../store/simulator";
+import { TaxSettings, setTaxSettings } from "../../store/simulator.js";
 
 export default function TaxSettingsPage(props: CalculatorSettingsSubpageProps) {
     const dispatch = useAppDispatch();

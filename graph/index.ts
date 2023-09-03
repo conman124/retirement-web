@@ -1,7 +1,9 @@
-import TAX_RATES from "../data/tax";
+import TAX_RATES from "../data/tax.js";
 import * as d3 from "d3";
-import { Simulation as SimulationSettings } from "../store/simulator";
-import { getTextDimensions } from "./textDim";
+import { memoize } from "underscore";
+import { Simulation as SimulationSettings } from "../store/simulator.js";
+import { CachedCanvasFactory, getTextDimensions } from "./textDim.js";
+export { default as graphSizes } from "./sizes.js";
 
 export function getSimulationFromSettings(
     retirement: typeof import("@conman124/retirement"),
@@ -113,7 +115,9 @@ export function createGraph(
     {
         ANIMATION_RUNWAY_TIME,
         ANIMATION_TIME,
-    }: { ANIMATION_RUNWAY_TIME: number; ANIMATION_TIME: number }
+    }: { ANIMATION_RUNWAY_TIME: number; ANIMATION_TIME: number },
+    window: Window,
+    canvasFactory: CachedCanvasFactory
 ) {
     const ANIMATION_TOTAL_TIME = ANIMATION_RUNWAY_TIME + ANIMATION_TIME;
 
@@ -134,14 +138,18 @@ export function createGraph(
     const moneyFormat = abbreviateLabels ? "$,.0s" : "$,.0f";
 
     const maxBalanceText = d3.format(moneyFormat)(maxBalance);
-    const textWidth = getTextDimensions(maxBalanceText, [
-        "font-sans",
-        "text-sm",
-    ]).width;
-    const textHeight = getTextDimensions("2020", [
-        "font-sans",
-        "text-sm",
-    ]).actualBoundingBoxAscent;
+    const textWidth = getTextDimensions(
+        maxBalanceText,
+        ["font-sans", "text-sm"],
+        window,
+        canvasFactory
+    ).width;
+    const textHeight = getTextDimensions(
+        "2020",
+        ["font-sans", "text-sm"],
+        window,
+        canvasFactory
+    ).actualBoundingBoxAscent;
 
     const margin = {
         left: textWidth + 10,
@@ -250,6 +258,10 @@ export function createGraph(
     };
 }
 
+const defaultCanvasFactory = memoize(() => {
+    return window.document.createElement("canvas");
+});
+
 export function graph(
     simulation: import("@conman124/retirement").Simulation,
     svgEl: SVGElement,
@@ -271,7 +283,9 @@ export function graph(
         width,
         height,
         abbreviateLabels,
-        { ANIMATION_RUNWAY_TIME, ANIMATION_TIME }
+        { ANIMATION_RUNWAY_TIME, ANIMATION_TIME },
+        window,
+        defaultCanvasFactory
     );
 
     const timer = d3.timer((elapsed) => {
@@ -283,3 +297,5 @@ export function graph(
         }
     });
 }
+
+export { testingSimulation } from "./testSettings.js";

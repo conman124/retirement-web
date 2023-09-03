@@ -1,5 +1,5 @@
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { SettingsGroup, Setting, EditButton } from "./SettingsGroup";
+import { useAppDispatch, useAppSelector } from "../../store/hooks.js";
+import { SettingsGroup, Setting, EditButton } from "./SettingsGroup.js";
 import {
     Gender,
     JobSettings,
@@ -9,11 +9,11 @@ import {
     setSeed,
     setCount,
     isSimulationReady,
-} from "../../store/simulator";
+} from "../../store/simulator.js";
 import {
     CalculatorSettingsSubpageProps,
     Subpage,
-} from "../../pages/calculator";
+} from "../../pages/calculator.js";
 import React from "react";
 
 function pluralize(number: number, word: string, plural?: string) {

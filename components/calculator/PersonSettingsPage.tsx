@@ -1,11 +1,11 @@
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { SettingsGroup, Setting, BackButton } from "./SettingsGroup";
+import { useAppDispatch, useAppSelector } from "../../store/hooks.js";
+import { SettingsGroup, Setting, BackButton } from "./SettingsGroup.js";
 import {
     CalculatorSettingsSubpageProps,
     Subpage,
-} from "../../pages/calculator";
+} from "../../pages/calculator.js";
 import { useState } from "react";
-import { Gender, setPerson, setCareerPeriods } from "../../store/simulator";
+import { Gender, setPerson, setCareerPeriods } from "../../store/simulator.js";
 
 function ageToBirthday(ageYears: number, ageMonths: number) {
     let cur = new Date();

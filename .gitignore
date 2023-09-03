@@ -36,4 +36,4 @@ yarn-error.log*
 next-env.d.ts
 
 scripts-build/
-graph-pngs-out/
+graph-webp-out/

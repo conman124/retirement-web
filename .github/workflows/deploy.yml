@@ -40,6 +40,8 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GH_REPO_TOKEN }}
       - name: Run build and export
         run: npx next build && npx next export
+      - name: Generate graph sample animations
+        run: npm run create-graph-webp
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:

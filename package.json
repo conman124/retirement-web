@@ -6,7 +6,8 @@
     "dev": "NODE_OPTIONS=--experimental-wasm-modules next dev",
     "build": "NODE_OPTIONS=--experimental-wasm-modules next build",
     "lint": "next lint",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "create-graph-webp": "rm graph-webp-out -Rf && npx tsc scripts/create-graph-webp/create-graph-webp.ts --outDir scripts-build/ --module esnext --moduleResolution bundler && node --experimental-wasm-modules scripts-build/scripts/create-graph-webp/create-graph-webp.js"
   },
   "dependencies": {
     "@conman124/retirement": "^0.0.9",

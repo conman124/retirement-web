@@ -8,7 +8,7 @@ import { memoize } from "underscore";
 import { createCanvas, Image } from "canvas";
 import * as Retirement from "@conman124/retirement";
 import { mkdirSync } from "fs";
-import { writeFile, mkdir } from "fs/promises";
+import { writeFile, mkdir, copyFile } from "fs/promises";
 import path from "path";
 import { cwd } from "process";
 import cliProgress, { MultiBar } from "cli-progress";
@@ -129,6 +129,17 @@ await (async () => {
                     `docker run --mount type=bind,src=${cwd()}/graph-webp-out,dst=/mnt/graph-webp-out libwebp-tools img2webp /mnt/graph-webp-out/${w}x${h}/img2webp.args`
                 );
             })
+            .then(() =>
+                copyFile(
+                    path.join(
+                        cwd(),
+                        "graph-webp-out",
+                        `${w}x${h}`,
+                        `${w}x${h}.webp`
+                    ),
+                    path.join(cwd(), `out/graph-${w}x${h}.webp`)
+                )
+            )
             .then(() => webpProgress.increment());
     }
     pngProgress.stop();

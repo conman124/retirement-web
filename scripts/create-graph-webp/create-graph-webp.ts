@@ -96,9 +96,6 @@ await (async () => {
 
             const ctx = canvas.getContext("2d");
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.beginPath();
-            ctx.fillStyle = "#fff";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             const img = await createImageFromBlob(btoa(svg.outerHTML));
             ctx.drawImage(img, 0, 0);
@@ -123,24 +120,34 @@ await (async () => {
             commandStr
         );
 
-        dockerPromise = dockerPromise
-            .then(() => {
-                return exec(
-                    `docker run --mount type=bind,src=${cwd()}/graph-webp-out,dst=/mnt/graph-webp-out libwebp-tools img2webp /mnt/graph-webp-out/${w}x${h}/img2webp.args`
-                );
-            })
-            .then(() =>
-                copyFile(
-                    path.join(
-                        cwd(),
-                        "graph-webp-out",
-                        `${w}x${h}`,
-                        `${w}x${h}.webp`
-                    ),
-                    path.join(cwd(), `out/graph-${w}x${h}.webp`)
-                )
-            )
-            .then(() => webpProgress.increment());
+        dockerPromise = dockerPromise.then(async () => {
+            await exec(
+                `docker run --mount type=bind,src=${cwd()}/graph-webp-out,dst=/mnt/graph-webp-out libwebp-tools img2webp /mnt/graph-webp-out/${w}x${h}/img2webp.args`
+            );
+            await mkdir(path.join(cwd(), "out/autogen"), { recursive: true });
+            await mkdir(path.join(cwd(), "public/autogen"), {
+                recursive: true,
+            });
+            await copyFile(
+                path.join(
+                    cwd(),
+                    "graph-webp-out",
+                    `${w}x${h}`,
+                    `${w}x${h}.webp`
+                ),
+                path.join(cwd(), `out/autogen/graph-${w}x${h}.webp`)
+            );
+            await copyFile(
+                path.join(
+                    cwd(),
+                    "graph-webp-out",
+                    `${w}x${h}`,
+                    `${w}x${h}.webp`
+                ),
+                path.join(cwd(), `public/autogen/graph-${w}x${h}.webp`)
+            );
+            webpProgress.increment();
+        });
     }
     pngProgress.stop();
     dockerPromise

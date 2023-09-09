@@ -15,9 +15,7 @@ export default function Home() {
     return (
         <div className="flex justify-center">
             <div className="flex flex-col items-middle w-[360px] sm:w-[640px] md:w-[768px] lg:w-[1024px]">
-                <picture className="mt-4 grow-0">
-                    {" "}
-                    {/* TODO do I still need grow-0*/}
+                <picture className="mt-4">
                     {imgBreakpoints.map((b, i) => (
                         <source
                             srcSet={loader(imgWidths[i])}

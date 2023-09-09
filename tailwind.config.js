@@ -24,6 +24,7 @@ module.exports = {
     "node_modules/react-daisyui/dist/**/*.js",
   ],
   theme: {
+    screens: require('./screens.js'),
     extend: {},
   },
   plugins: [require("daisyui")],

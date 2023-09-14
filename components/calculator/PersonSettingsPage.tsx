@@ -6,6 +6,24 @@ import {
 } from "../../pages/calculator.js";
 import { useState } from "react";
 import { Gender, setPerson, setCareerPeriods } from "../../store/simulator.js";
+import { memoize } from "underscore";
+
+function _checkMonthSupport() {
+    const el = document.createElement("input");
+    try {
+        el.type = "month";
+    } catch (e) {
+        // nothing to do
+    }
+
+    if (el.type === "month") {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+const checkMonthSupport = memoize(_checkMonthSupport);
 
 function ageToBirthday(ageYears: number, ageMonths: number) {
     let cur = new Date();
@@ -35,7 +53,9 @@ function retirementAgeFromPeriods(careerPeriods, ageYears, ageMonths) {
     return Math.floor(retirementAge / 12);
 }
 
-export default function PersonSettings(props: CalculatorSettingsSubpageProps) {
+export default function PersonSettingsPage(
+    props: CalculatorSettingsSubpageProps
+) {
     const dispatch = useAppDispatch();
     const person = useAppSelector((state) => state.simulation.person);
     const careerPeriods = useAppSelector(
@@ -104,7 +124,9 @@ export default function PersonSettings(props: CalculatorSettingsSubpageProps) {
             <SettingsGroup title="Person Settings">
                 <Setting
                     name="Birthday"
-                    subtext="Used to determine your starting age, YYYY-MM"
+                    subtext={`Used to determine your current age${
+                        checkMonthSupport() ? "" : ", YYYY-MM format"
+                    }`}
                 >
                     <input
                         className="input input-bordered w-full max-w-xs"
@@ -124,7 +146,10 @@ export default function PersonSettings(props: CalculatorSettingsSubpageProps) {
                         }
                     />
                 </Setting>
-                <Setting name="Mortality Table">
+                <Setting
+                    name="Mortality Table"
+                    subtext="Used to simulate the death age for each run"
+                >
                     <div className="form-control w-48">
                         <label className="label cursor-pointer">
                             <span className="label-text">Male</span>

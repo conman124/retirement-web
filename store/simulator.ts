@@ -166,7 +166,6 @@ export function isSimulationReady(state: RootState) {
     return (
         state.simulation.person &&
         state.simulation.job &&
-        state.simulation.rates &&
-        state.simulation.taxSettings
+        state.simulation.rates
     );
 }

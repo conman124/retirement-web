@@ -5,9 +5,9 @@ import {
     getSimulationFromSettings,
     graphSizes,
 } from "../graph/index.js";
-import { useAppSelector } from "../store/hooks.js";
+import { useAppDispatch, useAppSelector } from "../store/hooks.js";
 import { useRouter } from "next/router";
-import { isSimulationReady } from "../store/simulator.js";
+import { isSimulationReady, setSeed } from "../store/simulator.js";
 
 const GraphDynamic = dynamic({
     loader: async () => {
@@ -30,6 +30,12 @@ const GraphDynamic = dynamic({
 
             const simulationState = useAppSelector((state) => state.simulation);
             const readyToRun = useAppSelector(isSimulationReady);
+            const dispatch = useAppDispatch();
+
+            const seedReady = !(typeof simulationState.seed === "undefined");
+            if (!seedReady) {
+                dispatch(setSeed(Math.floor(Math.random() * 100000)));
+            }
 
             useEffect(() => {
                 if (!readyToRun) {
@@ -37,10 +43,14 @@ const GraphDynamic = dynamic({
                     return;
                 }
 
+                if (!seedReady) {
+                    return;
+                }
+
                 const simulation = getSimulationFromSettings(
                     RetirementModule,
                     simulationState
-                ); // TODO figure out a way to keep seed the same within a session
+                );
 
                 svgs.forEach((svg, i) => {
                     svg.current.replaceChildren([]);
@@ -49,7 +59,7 @@ const GraphDynamic = dynamic({
                         ANIMATION_TIME: 3000,
                     });
                 });
-            }, [readyToRun, simulationState]);
+            }, [readyToRun, simulationState, seedReady]);
 
             return (
                 <div className="flex justify-center">

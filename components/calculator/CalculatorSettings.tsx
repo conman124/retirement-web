@@ -59,9 +59,9 @@ function jobSubtext({
     salaryDesc += "/yr";
 
     let ficaDesc = "";
-    if (fica.type === "exempt") {
-        ficaDesc = ", no Social Security";
-    }
+    // if (fica.type === "exempt") {
+    //     ficaDesc = ", no Social Security";
+    // }
 
     let raiseDesc = ", ";
     raiseDesc += Math.round(raiseSettings.amount * 100 - 100) + "% raise";
@@ -164,14 +164,14 @@ export default function CalculatorSettings(
                         onClick={() => props.changeSubpage(Subpage.JOB)}
                     />
                 </Setting>
-                <Setting name="Market rates" subtext={ratesSub}>
+                {/* <Setting name="Market rates" subtext={ratesSub}>
                     <EditButton />
                 </Setting>
                 <Setting name="Taxes" subtext={taxSub}>
                     <EditButton
                         onClick={() => props.changeSubpage(Subpage.TAX)}
                     />
-                </Setting>
+                </Setting> */}
                 <Setting name="Run count">
                     <input
                         type="number"

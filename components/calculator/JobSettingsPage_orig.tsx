@@ -14,7 +14,7 @@ import {
 
 // TODO fix rounding percentage throughout
 
-export default function JobSettingsPage(props: CalculatorSettingsSubpageProps) {
+export default function PersonSettings(props: CalculatorSettingsSubpageProps) {
     const dispatch = useAppDispatch();
     const job = useAppSelector((state) => state.simulation.job);
     const [salary, setSalary] = useState(
@@ -48,16 +48,37 @@ export default function JobSettingsPage(props: CalculatorSettingsSubpageProps) {
         return [contribution, setContribution, balance, setBalance];
     }
 
-    const employeeAcct = getAcct(
-        (acc) => acc.contributionSource === AccountContributionSource.Employee
+    const employeePreTaxAcct = getAcct(
+        (acc) =>
+            acc.contributionSource === AccountContributionSource.Employee &&
+            acc.tax == AccountContributionTaxability.PreTax
+    );
+    const employeePostTaxAcct = getAcct(
+        (acc) =>
+            acc.contributionSource === AccountContributionSource.Employee &&
+            acc.tax == AccountContributionTaxability.PostTax
     );
     const employerAcct = getAcct(
         (acc) => acc.contributionSource === AccountContributionSource.Employer
     );
-    const [employeeContribution, setEmployeeContribution, balance, setBalance] =
-        useContributionAndBalanceFromAcct(employeeAcct);
-    const [employerContribution, setEmployerContribution] =
-        useContributionAndBalanceFromAcct(employerAcct);
+    const [
+        preTaxContribution,
+        setPreTaxContribution,
+        preTaxBalance,
+        setPreTaxBalance,
+    ] = useContributionAndBalanceFromAcct(employeePreTaxAcct);
+    const [
+        postTaxContribution,
+        setPostTaxContribution,
+        postTaxBalance,
+        setPostTaxBalance,
+    ] = useContributionAndBalanceFromAcct(employeePostTaxAcct);
+    const [
+        employerContribution,
+        setEmployerContribution,
+        employerBalance,
+        setEmployerBalance,
+    ] = useContributionAndBalanceFromAcct(employerAcct);
 
     function validate() {
         // TODO do better
@@ -71,21 +92,22 @@ export default function JobSettingsPage(props: CalculatorSettingsSubpageProps) {
             warn += "Enter your annual raise %. ";
         }
 
-        const hasEmployeeContribution = !Number.isNaN(
-            parseFloat(employeeContribution)
-        );
-        const hasEmployerContribution = !Number.isNaN(
-            parseFloat(employerContribution)
-        );
-        const hasBalance = !Number.isNaN(parseFloat(balance));
-
-        if (
-            (hasEmployeeContribution || hasEmployerContribution) &&
-            !hasBalance
+        function validateAcct(
+            contribution: string,
+            balance: string,
+            name: string
         ) {
-            warn +=
-                "Since you have a employee and/or employer contribution, you need to enter the starting balance. ";
+            if (
+                Number.isNaN(parseFloat(contribution)) !=
+                Number.isNaN(parseFloat(balance))
+            ) {
+                warn += `Enter or clear both ${name} settings. `;
+            }
         }
+
+        validateAcct(preTaxContribution, preTaxBalance, "pre-tax");
+        validateAcct(postTaxContribution, postTaxBalance, "post-tax");
+        validateAcct(employerContribution, employerBalance, "employer");
 
         if (warn) {
             alert(warn);
@@ -105,7 +127,7 @@ export default function JobSettingsPage(props: CalculatorSettingsSubpageProps) {
         ) {
             if (
                 !Number.isNaN(parseFloat(contributionPercent)) &&
-                !Number.isNaN(parseFloat(startingBalance))
+                !Number.isNaN(startingBalance)
             ) {
                 accounts.push({
                     accountSettings: {
@@ -120,23 +142,30 @@ export default function JobSettingsPage(props: CalculatorSettingsSubpageProps) {
 
         if (validate()) {
             createAcct(
-                balance,
-                employeeContribution,
+                preTaxBalance,
+                preTaxContribution,
                 AccountContributionSource.Employee,
-                AccountContributionTaxability.PreTax // doesn't matter right now because we are ignoring taxes
+                AccountContributionTaxability.PreTax
             );
             createAcct(
-                "0",
+                postTaxBalance,
+                postTaxContribution,
+                AccountContributionSource.Employee,
+                AccountContributionTaxability.PostTax
+            );
+            createAcct(
+                employerBalance,
                 employerContribution,
                 AccountContributionSource.Employer,
-                AccountContributionTaxability.PreTax // doesn't matter right now because we are ignoring taxes
+                AccountContributionTaxability.PreTax
             );
 
             dispatch(
                 setJob({
                     startingAnnualGrossIncome: parseFloat(salary),
                     fica: {
-                        type: "exempt",
+                        type: "participant",
+                        ssRate: 0.13,
                     },
                     raiseSettings: {
                         amount: parseFloat(raise) / 100 + 1,
@@ -147,6 +176,51 @@ export default function JobSettingsPage(props: CalculatorSettingsSubpageProps) {
             );
             props.changeSubpage(Subpage.MAIN);
         }
+    }
+
+    function AccountSettings({
+        name,
+        contributionPercent,
+        setContributionPercent,
+        startingBalance,
+        setStartingBalance,
+    }: {
+        name: string;
+        contributionPercent: string;
+        setContributionPercent: Dispatch<SetStateAction<string>>;
+        startingBalance: string;
+        setStartingBalance: Dispatch<SetStateAction<string>>;
+    }) {
+        return (
+            <>
+                <Setting name={`${name} contribution`}>
+                    <label className="input-group">
+                        <input
+                            type="number"
+                            placeholder=""
+                            className="input input-bordered"
+                            value={contributionPercent}
+                            onChange={(e) =>
+                                setContributionPercent(e.target.value)
+                            }
+                        />
+                        <span>%</span>
+                    </label>
+                </Setting>
+                <Setting name={`${name} starting balance`}>
+                    <label className="input-group">
+                        <span>$</span>
+                        <input
+                            type="number"
+                            placeholder=""
+                            className="input input-bordered"
+                            value={startingBalance}
+                            onChange={(e) => setStartingBalance(e.target.value)}
+                        />
+                    </label>
+                </Setting>
+            </>
+        );
     }
 
     return (
@@ -187,49 +261,27 @@ export default function JobSettingsPage(props: CalculatorSettingsSubpageProps) {
                         onChange={(e) => setInflationRaise(e.target.checked)}
                     />
                 </Setting>
-                <Setting
-                    name="Retirement starting balance"
-                    subtext="Starting balance for all retirement accounts (401k, 403b, IRA) (Roth or Traditional)"
-                >
-                    <label className="input-group">
-                        <span>$</span>
-                        <input
-                            type="number"
-                            placeholder=""
-                            className="input input-bordered"
-                            value={balance}
-                            onChange={(e) => setBalance(e.target.value)}
-                        />
-                    </label>
-                </Setting>
-                <Setting name="My contribution to retirement">
-                    <label className="input-group">
-                        <input
-                            type="number"
-                            placeholder=""
-                            className="input input-bordered"
-                            value={employeeContribution}
-                            onChange={(e) =>
-                                setEmployeeContribution(e.target.value)
-                            }
-                        />
-                        <span>%</span>
-                    </label>
-                </Setting>
-                <Setting name="Employer's contribution to retirement">
-                    <label className="input-group">
-                        <input
-                            type="number"
-                            placeholder=""
-                            className="input input-bordered"
-                            value={employerContribution}
-                            onChange={(e) =>
-                                setEmployerContribution(e.target.value)
-                            }
-                        />
-                        <span>%</span>
-                    </label>
-                </Setting>
+                {AccountSettings({
+                    name: "Employee Pre-tax 401k",
+                    contributionPercent: preTaxContribution,
+                    setContributionPercent: setPreTaxContribution,
+                    startingBalance: preTaxBalance,
+                    setStartingBalance: setPreTaxBalance,
+                })}
+                {AccountSettings({
+                    name: "Employee Post-tax 401k",
+                    contributionPercent: postTaxContribution,
+                    setContributionPercent: setPostTaxContribution,
+                    startingBalance: postTaxBalance,
+                    setStartingBalance: setPostTaxBalance,
+                })}
+                {AccountSettings({
+                    name: "Employeer 401k",
+                    contributionPercent: employerContribution,
+                    setContributionPercent: setEmployerContribution,
+                    startingBalance: employerBalance,
+                    setStartingBalance: setEmployerBalance,
+                })}
             </SettingsGroup>
         </>
     );

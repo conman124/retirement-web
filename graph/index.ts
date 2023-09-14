@@ -60,7 +60,7 @@ export function getSimulationFromSettings(
     );
     const jobSettings = new JobSettings(
         simulationSettings.job.startingAnnualGrossIncome / 12,
-        FicaJS.exempt(),
+        FicaJS.exempt(), // TODO
         raiseSettings,
         accountContributionSettingsVec
     );
@@ -69,30 +69,27 @@ export function getSimulationFromSettings(
         simulationSettings.person.ageMonths,
         simulationSettings.person.deathRates.gender
     );
-    let selectedTax: typeof TAX_RATES.settings.single;
-    if (simulationSettings.taxSettings.filingStatus == "single") {
-        selectedTax = TAX_RATES.settings.single;
-    } else if (
-        simulationSettings.taxSettings.filingStatus == "head_of_household"
-    ) {
-        selectedTax = TAX_RATES.settings.head_of_household;
-    } else {
-        selectedTax = TAX_RATES.settings.married_joint;
-    }
+    //let selectedTax: typeof TAX_RATES.settings.single;
+    // if (simulationSettings.taxSettings.filingStatus == "single") {
+    //     selectedTax = TAX_RATES.settings.single;
+    // } else if (
+    //     simulationSettings.taxSettings.filingStatus == "head_of_household"
+    // ) {
+    //     selectedTax = TAX_RATES.settings.head_of_household;
+    // } else {
+    //     selectedTax = TAX_RATES.settings.married_joint;
+    // }
+    // TODO reenable taxes
     const tax = new TaxSettings(
-        new Float64Array(selectedTax.bracketFloors),
-        new Float64Array(selectedTax.bracketRates),
-        simulationSettings.taxSettings.adjustBracketFloorsForInflation,
-        selectedTax.standardDeduction,
-        simulationSettings.taxSettings.adjustDeductionForInflation
+        new Float64Array([0]),
+        new Float64Array([0]),
+        false,
+        0,
+        false
     );
 
     const simulation = new Simulation(
-        BigInt(
-            typeof simulationSettings.seed === "undefined"
-                ? Math.floor(Math.random() * 100000)
-                : simulationSettings.seed
-        ),
+        BigInt(simulationSettings.seed),
         simulationSettings.count,
         RatesSourceHolder.new_from_builtin(),
         12,

@@ -9,8 +9,8 @@ export enum Subpage {
     MAIN,
     PERSON,
     JOB,
-    RATES,
-    TAX,
+    //RATES,
+    //TAX,
 }
 
 export type CalculatorSettingsSubpageProps = {
@@ -28,8 +28,8 @@ export default function Calculator() {
         [Subpage.MAIN]: CalculatorSettings,
         [Subpage.PERSON]: PersonSettings,
         [Subpage.JOB]: JobSettings,
-        [Subpage.RATES]: CalculatorSettings, // TODO
-        [Subpage.TAX]: TaxSettingsPage,
+        // [Subpage.RATES]: CalculatorSettings, // TODO
+        // [Subpage.TAX]: TaxSettingsPage,
     };
 
     let component = map[subpage];

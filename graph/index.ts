@@ -8,7 +8,7 @@ export { default as graphSizes } from "./sizes.js";
 export function getSimulationFromSettings(
     retirement: typeof import("@conman124/retirement"),
     simulationSettings: SimulationSettings
-) {
+): [import("@conman124/retirement").Simulation, number] {
     const {
         AccountContributionSettings,
         AccountContributionSettingsVec,
@@ -24,6 +24,7 @@ export function getSimulationFromSettings(
     } = retirement;
 
     const accountContributionSettingsVec = new AccountContributionSettingsVec();
+    let accountCount = 0;
     simulationSettings.job.accountContributionSettings.forEach((s) => {
         const startingStocks =
             (110 - Math.min(simulationSettings.person.ageYears, 110)) / 100;
@@ -52,6 +53,7 @@ export function getSimulationFromSettings(
             s.tax
         );
         accountContributionSettingsVec.add(accountContributionSettings);
+        ++accountCount;
     });
 
     const raiseSettings = new RaiseSettings(
@@ -60,7 +62,7 @@ export function getSimulationFromSettings(
     );
     const jobSettings = new JobSettings(
         simulationSettings.job.startingAnnualGrossIncome / 12,
-        FicaJS.exempt(), // TODO
+        FicaJS.participant(0.0765),
         raiseSettings,
         accountContributionSettingsVec
     );
@@ -81,11 +83,11 @@ export function getSimulationFromSettings(
     // }
     // TODO reenable taxes
     const tax = new TaxSettings(
-        new Float64Array([0]),
-        new Float64Array([0]),
-        false,
-        0,
-        false
+        new Float64Array(TAX_RATES.settings.single.bracketFloors),
+        new Float64Array(TAX_RATES.settings.single.bracketRates),
+        true,
+        TAX_RATES.settings.single.standardDeduction,
+        true
     );
 
     const simulation = new Simulation(
@@ -99,11 +101,12 @@ export function getSimulationFromSettings(
         tax
     );
 
-    return simulation;
+    return [simulation, accountCount];
 }
 
 export function createGraph(
     simulation: import("@conman124/retirement").Simulation,
+    accountCount: number, // TODO edit simulation to provide this
     svgEl: SVGElement,
     showSimCount: number,
     width: number,
@@ -121,9 +124,15 @@ export function createGraph(
     let lifetime = 0;
     let maxBalance = 0;
     for (let i = 0; i < showSimCount; ++i) {
-        let balance = simulation.get_account_balance_for_run(i, 0); // TODO need to add all balances
-        lifetime = Math.max(lifetime, balance.length);
-        maxBalance = Math.max(maxBalance, d3.max(balance));
+        let runLifetime = simulation.get_account_balance_for_run(i, 0).length;
+        let totalBalance = new Float64Array(runLifetime);
+        for (let j = 0; j < accountCount; ++j) {
+            // TODO do this in a less dumb way, probably in rust
+            let balance = simulation.get_account_balance_for_run(i, j);
+            totalBalance = totalBalance.map((b, i) => b + balance[i]);
+        }
+        lifetime = Math.max(lifetime, runLifetime);
+        maxBalance = Math.max(maxBalance, d3.max(totalBalance));
     }
 
     let dates = [];
@@ -173,8 +182,17 @@ export function createGraph(
     const successful = [];
 
     for (let i = 0; i < showSimCount; ++i) {
+        let totalBalance = new Float64Array(
+            simulation.get_account_balance_for_run(i, 0).length
+        );
+        for (let j = 0; j < accountCount; ++j) {
+            // TODO do this in a less dumb way, probably in rust
+            let balance = simulation.get_account_balance_for_run(i, j);
+            totalBalance = totalBalance.map((b, i) => b + balance[i]);
+        }
+
         const data_joined = Array.prototype.map.call(
-            simulation.get_account_balance_for_run(i, 0), // TODO need to add all balances
+            totalBalance,
             (balance, index) => [balance, dates[index]]
         );
         successful.push(
@@ -261,6 +279,7 @@ const defaultCanvasFactory = memoize(() => {
 
 export function graph(
     simulation: import("@conman124/retirement").Simulation,
+    accountCount: number,
     svgEl: SVGElement,
     showSimCount: number,
     width: number,
@@ -275,6 +294,7 @@ export function graph(
 
     const { update } = createGraph(
         simulation,
+        accountCount,
         svgEl,
         showSimCount,
         width,

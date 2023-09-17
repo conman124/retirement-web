@@ -23,7 +23,7 @@ const FPS = 30;
 
 const window = createSVGWindow();
 const document = window.document;
-const simulation = testingSimulation(Retirement);
+const [simulation, accountCount] = testingSimulation(Retirement);
 const textDimCanvasFactory = memoize(() => createCanvas(100, 100));
 
 function createName(w: number, h: number, i: number, root = cwd()) {
@@ -82,6 +82,7 @@ await (async () => {
 
         let { update } = createGraph(
             simulation,
+            accountCount,
             svg,
             ...graphSizes[i],
             { ANIMATION_RUNWAY_TIME, ANIMATION_TIME },

@@ -1,3 +1,4 @@
+import { Simulation } from "@conman124/retirement";
 import deathCSV from "../data/test_death.js";
 import ratesCSV from "../data/test_rates.js";
 
@@ -21,7 +22,7 @@ let inflation = Float64Array.from(rates.map((a) => a[2]));
 
 export function testingSimulation(
     retirement: typeof import("@conman124/retirement")
-) {
+): [Simulation, number] {
     const {
         AccountContributionSettings,
         AccountContributionSettingsVec,
@@ -83,5 +84,5 @@ export function testingSimulation(
         taxSettings
     );
 
-    return simulation;
+    return [simulation, 1];
 }

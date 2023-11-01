@@ -22,11 +22,6 @@ function MyApp({ Component, pageProps }: AppProps) {
                             Calculator
                         </a>
                     </Link>
-                    <Link href="/about">
-                        <a className="pl-4 pr-4 text-primary-content text-xl">
-                            About
-                        </a>
-                    </Link>
                 </Navbar.Center>
                 <Navbar.End className="hidden md:flex"></Navbar.End>
             </Navbar>

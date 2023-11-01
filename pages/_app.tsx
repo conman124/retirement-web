@@ -4,10 +4,14 @@ import { AppProps } from "next/app";
 import { Provider } from "react-redux";
 import "../styles/globals.css";
 import store from "../store/index.js";
+import Head from "next/head";
 
 function MyApp({ Component, pageProps }: AppProps) {
     return (
         <Provider store={store}>
+            <Head>
+                <title>RetireLabs</title>
+            </Head>
             <Navbar className="bg-primary shadow-lg">
                 <Navbar.Start className="hidden md:flex"></Navbar.Start>
                 <Navbar.Center>
